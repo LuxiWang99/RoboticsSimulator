@@ -30,6 +30,8 @@ public class floorControl : MonoBehaviour
 
     // void addGate();
 
+    // not sure what Landmark, Post and Gate are. Will implement once it is figured out. 
+
 
     // Update is called once per frame
     // void Update()

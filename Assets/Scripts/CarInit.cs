@@ -8,4 +8,15 @@ public class CarInit : MonoBehaviour
     {
         Instantiate(myPrefab, new Vector3(0,0,0), Quaternion.identity);
     }
+
+
+    void readLidar();
+    void readLandmarks();
+    void readGPS();
+    void readOdom();
+
+    void trueLandmarks();
+    void readTrueTransform();
+
+    
 }
