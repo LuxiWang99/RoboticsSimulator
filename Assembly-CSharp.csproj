@@ -41,6 +41,7 @@
      <Compile Include="Assets\SampleScenes\Menu\Scripts\SceneAndURLLoader.cs" />
      <Compile Include="Assets\Scripts\CarInit.cs" />
      <Compile Include="Assets\Scripts\floorControl.cs" />
+     <Compile Include="Assets\Scripts\Rover.cs" />
      <None Include="Assets\SampleScenes\Shaders\Skybox-Procedural.shader" />
     <Reference Include="UnityEngine">
         <HintPath>/Applications/Unity/Hub/Editor/2019.4.13f1/Unity.app/Contents/Managed/UnityEngine/UnityEngine.dll</HintPath>
