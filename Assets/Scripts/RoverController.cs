@@ -10,7 +10,7 @@ public class RoverController : MonoBehaviour
     private void Update()
     {
         float forwardBackward = Input.GetAxis("Vertical");
-        float leftRight = Input.GetAxis("Horizontal");
-        rover.setVelocity(forwardBackward, leftRight);
+        float leftRight = -Input.GetAxis("Horizontal");
+        rover.SetVelocity(forwardBackward, leftRight);
     }
 }
