@@ -24,6 +24,11 @@ public class Rover : MonoBehaviour
     {
         rb.velocity = transform.forward * driveforwardBackward;
         rb.angularVelocity = new Vector3(0.0f, -driveLeftRight, 0.0f);
+        // prevent obstacles from forcing unwanted transformations on rover
+        Vector3 pos = transform.position;
+        pos.y = 0.0f;
+        transform.position = pos;
+        transform.rotation = Quaternion.Euler(0.0f, transform.rotation.eulerAngles.y, 0.0f);
     }
 
     /// <summary>
