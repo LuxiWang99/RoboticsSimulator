@@ -5,24 +5,9 @@ using UnityEngine;
 
 public class floorControl : MonoBehaviour
 {
-
-
     public Rigidbody block;
     public GameObject floor;
-    public struct Leg
-    {
-        public Leg(int left, int right, (float, float, float) gps)
-        {
-            left_post_id = left;
-            right_post_id = right;
-            approx_GPS = gps;
-        }
-        public int left_post_id;
-        public int right_post_id;
-        public (float, float, float) approx_GPS;
-    }
 
-    private List<Leg> legs_ = new List<Leg>();
     private List<Vector3> tags = new List<Vector3>();
 
     public GameObject Post;
@@ -75,10 +60,6 @@ public class floorControl : MonoBehaviour
         var y1 = y - Math.Cos(theta)*width/2;
         var x2 = x - Math.Sin(theta)*width/2;
         var y2 = y + Math.Cos(theta)*width/2;
-        var right_id = addLandmark((float)x1, (float)y1);
-        var left_id = addLandmark((float)x2, (float)y2);
-        Leg l = new Leg(left_id, right_id, (gpsX, gpsY, 1));
-        legs_.Add(l);
         Instantiate(Gate, new Vector3(x,0.0f,y), Quaternion.identity);
      }
 
