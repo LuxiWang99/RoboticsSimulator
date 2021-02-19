@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class floorControl : MonoBehaviour
 {
-    public Rigidbody Block;
+    public GameObject Block;
     public GameObject floor;
     public GameObject Post;
     public GameObject Gate;
@@ -14,36 +14,46 @@ public class floorControl : MonoBehaviour
     {
         // AddDefaultObstacles();
         Gate.transform.localScale = new Vector3(5, 5, 5);
-        Instantiate(Gate, new Vector3(5f, 5f, 5f), Quaternion.identity);
+        
+        Instantiate(Gate, new Vector3(5f, 5f, 5f), Quaternion.identity).transform.Rotate(90,0,0, Space.Self);
+        // Tag.transform.Rotate(90,0,0, Space.Self);
+        // Post.transform.Rotate(90,0,0, Space.Self);
     }
     
     public void AddPost(Vector3 vec)
     {
-        Instantiate(Post, vec, Quaternion.identity);
+        GameObject p = Instantiate(Post, vec, Quaternion.identity);
+        p.transform.Rotate(90, 0, 0, Space.Self);
+        p.tag = "Post";
     }
 
     public void AddARTag(Vector3 vec)
     {
-        Instantiate(Tag, vec, Quaternion.identity);
+        GameObject p = Instantiate(Tag, vec, Quaternion.identity);
+        p.transform.Rotate(90, 0, 0, Space.Self);
+        p.tag = "Tag";
     }
 
     public void AddGate(Vector3 vec)
     {
-        Instantiate(Gate, vec, Quaternion.identity);
+        GameObject p = Instantiate(Gate, vec, Quaternion.identity);
+        p.transform.Rotate(90, 0, 0, Space.Self);
+        p.tag = "Gate";
     }
 
 
     public void AddObstacle(Vector3 vec)
     {
-        Instantiate(Block, vec, Quaternion.identity);
+        GameObject p = Instantiate(Block, vec, Quaternion.identity);
+        p.tag = "Obstacle";
     }
 
 
     void AddDefaultObstacles()
     {
-        Instantiate(Block, new Vector3(-4f, 4f, 4f), Quaternion.identity);
-        Instantiate(Block, new Vector3(-5f, 5f, 5f), Quaternion.identity);
-        Instantiate(Block, new Vector3(-1f, 1f, 1f), Quaternion.identity);
+        AddObstacle(new Vector3(-4f, 4f, 4f));
+        AddObstacle(new Vector3(-5f, 5f, 5f));
+        AddObstacle(new Vector3(-1f, 1f, 1f));
     }
 
     // Transform readTrueTransform()
