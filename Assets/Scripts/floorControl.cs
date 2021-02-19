@@ -5,31 +5,45 @@ using UnityEngine;
 
 public class floorControl : MonoBehaviour
 {
-    public Rigidbody block;
+    public Rigidbody Block;
     public GameObject floor;
-
-    private List<Vector3> tags = new List<Vector3>();
-
     public GameObject Post;
     public GameObject Gate;
+    public GameObject Tag;
     void Start()
     {
-        AddDefaultObstacles();
-         
+        // AddDefaultObstacles();
+        Gate.transform.localScale = new Vector3(5, 5, 5);
+        Instantiate(Gate, new Vector3(5f, 5f, 5f), Quaternion.identity);
+    }
+    
+    public void AddPost(Vector3 vec)
+    {
+        Instantiate(Post, vec, Quaternion.identity);
+    }
+
+    public void AddARTag(Vector3 vec)
+    {
+        Instantiate(Tag, vec, Quaternion.identity);
+    }
+
+    public void AddGate(Vector3 vec)
+    {
+        Instantiate(Gate, vec, Quaternion.identity);
     }
 
 
-    void AddObstacle(Vector3 vec)
+    public void AddObstacle(Vector3 vec)
     {
-        Instantiate(block, vec, Quaternion.identity);
+        Instantiate(Block, vec, Quaternion.identity);
     }
 
 
     void AddDefaultObstacles()
     {
-        Instantiate(block, new Vector3(-4f, 4f, 4f), Quaternion.identity);
-        Instantiate(block, new Vector3(-5f, 5f, 5f), Quaternion.identity);
-        Instantiate(block, new Vector3(-1f, 1f, 1f), Quaternion.identity);
+        Instantiate(Block, new Vector3(-4f, 4f, 4f), Quaternion.identity);
+        Instantiate(Block, new Vector3(-5f, 5f, 5f), Quaternion.identity);
+        Instantiate(Block, new Vector3(-1f, 1f, 1f), Quaternion.identity);
     }
 
     // Transform readTrueTransform()
