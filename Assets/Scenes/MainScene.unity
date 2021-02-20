@@ -476,7 +476,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 963194225}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 673f5c97fc4fdcc4f87e7eec9826ee2f, type: 3}
+  m_Script: {fileID: 11500000, guid: 4504494381383f3438df52f946faca29, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   rover: {fileID: 791395769}
