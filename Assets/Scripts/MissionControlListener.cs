@@ -37,24 +37,32 @@ public class MissionControlListener : MonoBehaviour
 
         StringBuilder jsonBuilder = new StringBuilder();
         int openBraceCount = 0;
+        int firstBraceIndex = -1;
         while (listen)
         {
             char ch = (char)reader.Read();
             if (ch == '{')
             {
+                if (firstBraceIndex == -1)
+                {
+                    firstBraceIndex = jsonBuilder.Length;
+                }
                 openBraceCount++;
             }
             else if (ch == '}')
             {
                 openBraceCount--;
             }
+
             jsonBuilder.Append(ch);
-            if (openBraceCount == 0)
+            if (firstBraceIndex != -1 && openBraceCount == 0)
             {
                 // end of request
-                string request = jsonBuilder.ToString();
+                string request = jsonBuilder.ToString().Substring(firstBraceIndex);
                 ProcessRequest(request);
+
                 jsonBuilder = new StringBuilder();
+                firstBraceIndex = -1;
             }
         }
         Debug.Log("Closing connection to Base Station");
@@ -68,7 +76,6 @@ public class MissionControlListener : MonoBehaviour
     /// <param name="request">the json request in string format</param>
     private void ProcessRequest(string request)
     {
-        Debug.Log("Request received from Base Station: " + request);
         int typeStartIndex = request.IndexOf("type") + 7;
         int typeEndIndex = request.Substring(typeStartIndex).IndexOf("\"");
         string type = request.Substring(typeStartIndex, typeEndIndex);
