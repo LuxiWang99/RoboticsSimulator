@@ -32,7 +32,7 @@ public class MissionControlListener : MonoBehaviour
     /// </summary>
     private void Connect()
     {
-        TcpClient client = new TcpClient("localhost", 3001);
+        TcpClient client = GetClient();
         StreamReader reader = new StreamReader(client.GetStream());
 
         StringBuilder jsonBuilder = new StringBuilder();
@@ -70,12 +70,28 @@ public class MissionControlListener : MonoBehaviour
         client.Close();
     }
 
+    private TcpClient GetClient()
+    {
+        try
+        {
+            TcpClient client = new TcpClient("localhost", 3001);
+            return client;
+        }
+        catch (SocketException e)
+        {
+            Debug.Log("Connection failed. Trying again in 5 seconds");
+            Thread.Sleep(5000);
+            return GetClient();
+        }
+    }
+
     /// <summary>
     /// Processes the given json request.
     /// </summary>
     /// <param name="request">the json request in string format</param>
     private void ProcessRequest(string request)
     {
+        Debug.Log("Message received from Base Station: " + request);
         int typeStartIndex = request.IndexOf("type") + 7;
         int typeEndIndex = request.Substring(typeStartIndex).IndexOf("\"");
         string type = request.Substring(typeStartIndex, typeEndIndex);
@@ -90,7 +106,10 @@ public class MissionControlListener : MonoBehaviour
                 rover.EStop(eStopRequest.release);
                 break;
             case "motor":
-                Debug.LogError("Motor request type not yet supported");
+                // Need to convert key name to a valid field name
+                request = request.Replace("PWM target", "PWM_target");
+                MotorRequest motorRequest = JsonUtility.FromJson<MotorRequest>(request);
+                rover.SetMotorPower(motorRequest.motor, motorRequest.PWM_target);
                 break;
             default:
                 Debug.LogError("Unknown request type: " + request);
@@ -112,7 +131,7 @@ public class MissionControlListener : MonoBehaviour
         public string type;
         public string motor;
         public string mode;
-        public float PID_target;
+        public float PWM_target;
     }
 
     [System.Serializable]
