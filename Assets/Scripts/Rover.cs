@@ -91,4 +91,9 @@ public class Rover : MonoBehaviour
                 throw new ArgumentException(motor + " is not a valid motor");
         }
     }
+
+    public Vector3[] LidarScan()
+    {
+        return new Vector3[0];
+    }
 }
