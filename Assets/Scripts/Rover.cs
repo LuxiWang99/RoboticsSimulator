@@ -17,6 +17,7 @@ public class Rover : MonoBehaviour
     public GameObject upperArm;
 
     private Rigidbody rb;
+    private bool eStopped;
     private float driveforwardBackward;
     private float driveLeftRight;
     private float armBasePower;
@@ -26,9 +27,12 @@ public class Rover : MonoBehaviour
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
+        eStopped = false;
         driveforwardBackward = 0.0f;
         driveLeftRight = 0.0f;
         armBasePower = 0.0f;
+        shoulderPower = 0.0f;
+        elbowPower = 0.0f;
     }
 
     private void FixedUpdate()
@@ -53,17 +57,44 @@ public class Rover : MonoBehaviour
     /// <param name="leftRight">The rotational velocity [-1.0, 1.0]. Positive values correspond to counterclockwise rotation. Negative values correspond to clockwise rotation.</param>
     public void SetVelocity(float forwardBackward, float leftRight)
     {
+        if (eStopped)
+        {
+            return;
+        }
         this.driveforwardBackward = forwardBackward * linearSpeed;
         this.driveLeftRight = leftRight * rotationSpeed;
     }
 
     public void EStop(bool release)
     {
-        Debug.LogError("EStop not yet supported");
+        Debug.LogError(release);
+        bool redundant = this.eStopped != release;
+        if (redundant)
+        {
+            return;
+        }
+        eStopped = !release;
+        if (eStopped)
+        {
+            Debug.Log("E-stop engaged");
+            driveforwardBackward = 0.0f;
+            driveLeftRight = 0.0f;
+            armBasePower = 0.0f;
+            shoulderPower = 0.0f;
+            elbowPower = 0.0f;
+        }
+        else
+        {
+            Debug.Log("E-stop disengaged");
+        }
     }
 
     public void SetMotorPower(string motor, float power)
     {
+        if (eStopped)
+        {
+            return;
+        }
         switch (motor)
         {
             case "arm_base":
