@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System;
 using System.IO;
 using System.Net.Sockets;
 using System.Threading;
@@ -32,56 +33,51 @@ public class MissionControlListener : MonoBehaviour
     /// </summary>
     private void Connect()
     {
-        TcpClient client = GetClient();
-        StreamReader reader = new StreamReader(client.GetStream());
-
-        StringBuilder jsonBuilder = new StringBuilder();
-        int openBraceCount = 0;
-        int firstBraceIndex = -1;
-        while (listen)
-        {
-            char ch = (char)reader.Read();
-            if (ch == '{')
-            {
-                if (firstBraceIndex == -1)
-                {
-                    firstBraceIndex = jsonBuilder.Length;
-                }
-                openBraceCount++;
-            }
-            else if (ch == '}')
-            {
-                openBraceCount--;
-            }
-
-            jsonBuilder.Append(ch);
-            if (firstBraceIndex != -1 && openBraceCount == 0)
-            {
-                // end of request
-                string request = jsonBuilder.ToString().Substring(firstBraceIndex);
-                ProcessRequest(request);
-
-                jsonBuilder = new StringBuilder();
-                firstBraceIndex = -1;
-            }
-        }
-        Debug.Log("Closing connection to Base Station");
-        reader.Close();
-        client.Close();
-    }
-
-    private TcpClient GetClient()
-    {
         try
         {
             TcpClient client = new TcpClient("localhost", 3001);
-            return client;
+            Debug.Log("Connected to base station");
+            StreamReader reader = new StreamReader(client.GetStream());
+
+            StringBuilder jsonBuilder = new StringBuilder();
+            int openBraceCount = 0;
+            int firstBraceIndex = -1;
+            while (listen)
+            {
+                char ch = (char)reader.Read();
+                if (ch == '{')
+                {
+                    if (firstBraceIndex == -1)
+                    {
+                        firstBraceIndex = jsonBuilder.Length;
+                    }
+                    openBraceCount++;
+                }
+                else if (ch == '}')
+                {
+                    openBraceCount--;
+                }
+
+                jsonBuilder.Append(ch);
+                if (firstBraceIndex != -1 && openBraceCount == 0)
+                {
+                    // end of request
+                    string request = jsonBuilder.ToString().Substring(firstBraceIndex);
+                    ProcessRequest(request);
+
+                    jsonBuilder = new StringBuilder();
+                    firstBraceIndex = -1;
+                }
+            }
+            Debug.Log("Closing connection to Base Station");
+            reader.Close();
+            client.Close();
         }
-        catch (SocketException e)
+        catch (Exception e)
         {
-            Debug.Log("Connection failed. Trying again in 5 seconds");
-            Thread.Sleep(5000);
-            return GetClient();
+            Debug.Log("Connection to base station failed, trying again in 3 seconds");
+            Thread.Sleep(3000);
+            Connect();
         }
     }
 
