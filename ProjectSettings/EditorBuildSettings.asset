@@ -4,5 +4,8 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/MissionControl.unity
+    guid: b3d4b13c69b21b74a9799b7da07a924d
   m_configObjects: {}

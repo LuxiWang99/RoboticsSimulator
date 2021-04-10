@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System;
 using System.IO;
 using System.Net.Sockets;
 using System.Threading;
@@ -32,42 +33,52 @@ public class MissionControlListener : MonoBehaviour
     /// </summary>
     private void Connect()
     {
-        TcpClient client = new TcpClient("localhost", 3001);
-        StreamReader reader = new StreamReader(client.GetStream());
-
-        StringBuilder jsonBuilder = new StringBuilder();
-        int openBraceCount = 0;
-        int firstBraceIndex = -1;
-        while (listen)
+        try
         {
-            char ch = (char)reader.Read();
-            if (ch == '{')
+            TcpClient client = new TcpClient("localhost", 3001);
+            Debug.Log("Connected to base station");
+            StreamReader reader = new StreamReader(client.GetStream());
+
+            StringBuilder jsonBuilder = new StringBuilder();
+            int openBraceCount = 0;
+            int firstBraceIndex = -1;
+            while (listen)
             {
-                if (firstBraceIndex == -1)
+                char ch = (char)reader.Read();
+                if (ch == '{')
                 {
-                    firstBraceIndex = jsonBuilder.Length;
+                    if (firstBraceIndex == -1)
+                    {
+                        firstBraceIndex = jsonBuilder.Length;
+                    }
+                    openBraceCount++;
                 }
-                openBraceCount++;
-            }
-            else if (ch == '}')
-            {
-                openBraceCount--;
-            }
+                else if (ch == '}')
+                {
+                    openBraceCount--;
+                }
 
-            jsonBuilder.Append(ch);
-            if (firstBraceIndex != -1 && openBraceCount == 0)
-            {
-                // end of request
-                string request = jsonBuilder.ToString().Substring(firstBraceIndex);
-                ProcessRequest(request);
+                jsonBuilder.Append(ch);
+                if (firstBraceIndex != -1 && openBraceCount == 0)
+                {
+                    // end of request
+                    string request = jsonBuilder.ToString().Substring(firstBraceIndex);
+                    ProcessRequest(request);
 
-                jsonBuilder = new StringBuilder();
-                firstBraceIndex = -1;
+                    jsonBuilder = new StringBuilder();
+                    firstBraceIndex = -1;
+                }
             }
+            Debug.Log("Closing connection to Base Station");
+            reader.Close();
+            client.Close();
         }
-        Debug.Log("Closing connection to Base Station");
-        reader.Close();
-        client.Close();
+        catch (Exception e)
+        {
+            Debug.Log("Connection to base station failed, trying again in 3 seconds");
+            Thread.Sleep(3000);
+            Connect();
+        }
     }
 
     /// <summary>
@@ -76,6 +87,7 @@ public class MissionControlListener : MonoBehaviour
     /// <param name="request">the json request in string format</param>
     private void ProcessRequest(string request)
     {
+        Debug.Log("Message received from Base Station: " + request);
         int typeStartIndex = request.IndexOf("type") + 7;
         int typeEndIndex = request.Substring(typeStartIndex).IndexOf("\"");
         string type = request.Substring(typeStartIndex, typeEndIndex);
@@ -90,7 +102,10 @@ public class MissionControlListener : MonoBehaviour
                 rover.EStop(eStopRequest.release);
                 break;
             case "motor":
-                Debug.LogError("Motor request type not yet supported");
+                // Need to convert key name to a valid field name
+                request = request.Replace("PWM target", "PWM_target");
+                MotorRequest motorRequest = JsonUtility.FromJson<MotorRequest>(request);
+                rover.SetMotorPower(motorRequest.motor, motorRequest.PWM_target);
                 break;
             default:
                 Debug.LogError("Unknown request type: " + request);
@@ -112,7 +127,7 @@ public class MissionControlListener : MonoBehaviour
         public string type;
         public string motor;
         public string mode;
-        public float PID_target;
+        public float PWM_target;
     }
 
     [System.Serializable]

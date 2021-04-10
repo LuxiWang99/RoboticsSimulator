@@ -3,10 +3,10 @@
 public class RoverCamera : MonoBehaviour
 {
     public GameObject rover;
-    public float height;
+    public Vector3 offset;
 
     private void Update()
     {
-        transform.position = rover.transform.position + new Vector3(0.0f, height, 0.0f);
+        transform.position = rover.transform.position + offset;
     }
 }
