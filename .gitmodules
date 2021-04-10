@@ -1,0 +1,3 @@
+[submodule "MissionControl"]
+	path = MissionControl
+	url = https://github.com/huskyroboticsteam/MissionControl
