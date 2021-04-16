@@ -12,9 +12,8 @@ public class ScriptBatch
      Console.WriteLine("This is from C#");
    }
 
-
-
-
+    // works as void world_interface_init() from the old simulator.
+    // https://github.com/huskyroboticsteam/PY2020/blob/3d-simulator-world-interface/src/Networking/simulator_3D_world_interface.cpp
     [MenuItem("MyTools/Windows Build With Postprocess")]
     public static void BuildGame ()
     {
@@ -33,4 +32,24 @@ public class ScriptBatch
         proc.StartInfo.FileName = path + "/simulator.app";
         proc.Start();
     }
+
+    public bool setCmdVel(double dtheta, double dx)
+    {}
+
+    public Tuple<double, double, double>[] readLidarScan()
+    {
+      // return Tuple.Create(0.0,0.0,0.0);
+      return null;
+    }
+
+    public Tuple<double, double, double>[] readLandmarks()
+    {
+      return null;
+    }
+
+    public Matrix readGPS()
+    {
+
+    }
+
 }
